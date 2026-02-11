@@ -21,12 +21,12 @@ cd ../
 cargo build --features _test-utils --profile dev
 # Generate C# bindings using uniffi-bindgen-cs
 if command -v uniffi-bindgen-cs &> /dev/null; then
-    uniffi-bindgen-cs --library ../target/debug/$LIBNAME --out-dir csharp/src/payjoin/ --config submodules/rust-payjoin/payjoin-ffi/uniffi.toml
+    uniffi-bindgen-cs --library ../target/debug/$LIBNAME --out-dir csharp/src/payjoin/ --config payjoin-ffi/uniffi.toml
 else
     echo "uniffi-bindgen-cs not found. Installing..."
-    cargo install uniffi-bindgen-cs --git https://github.com/NordSecurity/uniffi-bindgen-cs --tag v0.10.0+v0.29.4 --locked
+    cargo install uniffi-bindgen-cs --git https://github.com/sensslen/uniffi-bindgen-cs --branch main --locked
     CARGO_BIN_DIR="${CARGO_HOME:-$HOME/.cargo}/bin"
-    "${CARGO_BIN_DIR}/uniffi-bindgen-cs" --library ../target/debug/$LIBNAME --out-dir csharp/src/payjoin/ --config submodules/rust-payjoin/payjoin-ffi/uniffi.toml
+    "${CARGO_BIN_DIR}/uniffi-bindgen-cs" --library ../target/debug/$LIBNAME --out-dir csharp/src/payjoin/ --config payjoin-ffi/uniffi.toml
 fi
 
 if [[ $OS == "Darwin" ]]; then
@@ -54,11 +54,12 @@ fi
 
 echo ""
 echo "Fixing generated C# Bindings"
-sed -i.bak -e 's/variant_value\.@)/variant_value.@v1)/g' \
-    -e 's/public MonitorTransition Monitor\(/public MonitorTransition MonitorTransition(/g' \
-    -e 's/MonitorTransition Monitor\(/MonitorTransition MonitorTransition(/g' \
-    -e 's/new byte\[]\[(length)\]/new byte[length][]/g' \
-    csharp/src/payjoin/payjoin.cs
+perl -i.bak -0777 -pe '
+      s/variant_value\.@\)/variant_value.\@v1)/g;
+      s/public MonitorTransition Monitor\(/public MonitorTransition MonitorTransition(/g;
+      s/MonitorTransition Monitor\(/MonitorTransition MonitorTransition(/g;
+      s/new byte\[\]\[\(length\)\]/new byte[length][]/g;
+    ' "csharp/src/payjoin/payjoin.cs"
 rm -f csharp/src/payjoin/payjoin.cs.bak
 
 echo "All done!"

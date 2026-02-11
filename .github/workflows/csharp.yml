@@ -12,7 +12,7 @@ env:
 
 jobs:
   build-csharp-and-test:
-    name: "Build and test csharp"
+    name: Build and test csharp
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -21,22 +21,22 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-      - name: "Checkout"
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: "Install Rust 1.85.0"
+      - name: Install Rust 1.85.0
         uses: dtolnay/rust-toolchain@1.85.0
 
-      - name: "Use cache"
+      - name: Use cache
         uses: Swatinem/rust-cache@v2
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: 8.0.x
 
-      - name: "Generate C# bindings and native binaries"
+      - name: Generate C# bindings and native binaries
         run: bash ./scripts/generate_bindings.sh
 
-      - name: "Build C# tests"
-        run: dotnet build --configuration Release Tests
+      - name: Run C# tests
+        run: dotnet test --configuration Release test
