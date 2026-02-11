@@ -15,12 +15,11 @@ else
     exit 1
 fi
 
-
 cd ../
 # This is a test script the actual release should not include the test utils feature
 cargo build --features _test-utils --profile dev
 # Generate C# bindings using uniffi-bindgen-cs
-if command -v uniffi-bindgen-cs &> /dev/null; then
+if command -v uniffi-bindgen-cs &>/dev/null; then
     uniffi-bindgen-cs --library ../target/debug/$LIBNAME --out-dir csharp/src/payjoin/ --config payjoin-ffi/uniffi.toml
 else
     echo "uniffi-bindgen-cs not found. Installing..."
