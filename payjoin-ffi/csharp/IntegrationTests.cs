@@ -324,6 +324,43 @@ namespace Payjoin.Tests
         }
 
         [Fact]
+        public async Task FetchAndDecodeOhttpKeysViaRelayProxy()
+        {
+            var cancellationToken = TestContext.Current.CancellationToken;
+
+            _services!.WaitForServicesReady();
+            var ohttpRelay = _services.OhttpRelayUrl();
+            var directory = _services.DirectoryUrl();
+            var cert = _services.Cert();
+
+            using var keys = await FetchAndDecodeOhttpKeysViaRelayProxyAsync(ohttpRelay, directory, cert, cancellationToken);
+
+            Assert.NotNull(keys);
+        }
+
+        private static async Task<OhttpKeys> FetchAndDecodeOhttpKeysViaRelayProxyAsync(string ohttpRelay, string directory, byte[] cert, CancellationToken cancellationToken = default)
+        {
+            var keysUrl = new System.Uri(new System.Uri(directory), "/.well-known/ohttp-gateway");
+
+            using var handler = new HttpClientHandler
+            {
+                Proxy = new System.Net.WebProxy(ohttpRelay),
+                UseProxy = true,
+                ServerCertificateCustomValidationCallback = (_, serverCert, _, _) => serverCert != null && serverCert.GetRawCertData().SequenceEqual(cert)
+            };
+
+            using var client = new HttpClient(handler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, keysUrl);
+            request.Headers.Accept.ParseAdd("application/ohttp-keys");
+
+            using var response = await client.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var body = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            return OhttpKeys.Decode(body);
+        }
+
+        [Fact]
         public void TestFfiValidation()
         {
             var tooLargeAmount = 21_000_000UL * 100_000_000UL + 1;
