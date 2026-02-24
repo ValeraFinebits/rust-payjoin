@@ -1,3 +1,4 @@
+using Payjoin.Http;
 using System.Text.Json;
 using uniffi.payjoin;
 using Xunit;
@@ -333,31 +334,9 @@ namespace Payjoin.Tests
             var directory = _services.DirectoryUrl();
             var cert = _services.Cert();
 
-            using var keys = await FetchAndDecodeOhttpKeysViaRelayProxyAsync(ohttpRelay, directory, cert, cancellationToken);
+            using var keys = await OhttpKeysClient.GetOhttpKeysAsync(new System.Uri(ohttpRelay), new System.Uri(directory), cert, cancellationToken);
 
             Assert.NotNull(keys);
-        }
-
-        private static async Task<OhttpKeys> FetchAndDecodeOhttpKeysViaRelayProxyAsync(string ohttpRelay, string directory, byte[] cert, CancellationToken cancellationToken = default)
-        {
-            var keysUrl = new System.Uri(new System.Uri(directory), "/.well-known/ohttp-gateway");
-
-            using var handler = new HttpClientHandler
-            {
-                Proxy = new System.Net.WebProxy(ohttpRelay),
-                UseProxy = true,
-                ServerCertificateCustomValidationCallback = (_, serverCert, _, _) => serverCert != null && serverCert.GetRawCertData().SequenceEqual(cert)
-            };
-
-            using var client = new HttpClient(handler);
-            using var request = new HttpRequestMessage(HttpMethod.Get, keysUrl);
-            request.Headers.Accept.ParseAdd("application/ohttp-keys");
-
-            using var response = await client.SendAsync(request, cancellationToken);
-            response.EnsureSuccessStatusCode();
-
-            var body = await response.Content.ReadAsByteArrayAsync(cancellationToken);
-            return OhttpKeys.Decode(body);
         }
 
         [Fact]
@@ -432,7 +411,7 @@ namespace Payjoin.Tests
                 );
                 new InputPair(txin, psbtIn, new PlainWeight(0));
             });
-            
+
             var directory = _services!.DirectoryUrl();
             _services.WaitForServicesReady();
             var ohttpKeys = _services.FetchOhttpKeys();
@@ -469,9 +448,9 @@ namespace Payjoin.Tests
                 Assert.Skip($"test-utils are not available: {ex.GetType().Name}: {ex.Message}");
             }
 
-            _ = _env.GetBitcoind();
-            var receiver = _env.GetReceiver();
-            var sender = _env.GetSender();
+            using var bitcoind = _env.GetBitcoind();
+            using var receiver = _env.GetReceiver();
+            using var sender = _env.GetSender();
 
             var receiverAddressJson = RpcCall(receiver, "getnewaddress");
             var receiverAddress = JsonSerializer.Deserialize<string>(receiverAddressJson)!;
