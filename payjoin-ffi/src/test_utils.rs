@@ -163,7 +163,7 @@ impl TestServices {
         })
     }
 
-    pub fn fetch_ohttp_keys(&self) -> Result<crate::OhttpKeys, crate::core::io::IoError> {
+    pub fn fetch_ohttp_keys(&self) -> Result<crate::OhttpKeys, crate::std::io::IoError> {
         let runtime = RUNTIME.lock().expect("Lock should not be poisoned");
         runtime.block_on(async {
             self.0.lock().await.fetch_ohttp_keys().await.map_err(Into::into).map(Into::into)
