@@ -6,11 +6,10 @@ license = "MIT OR Apache-2.0"
 exclude = ["tests"]
 
 [features]
-default = ["io"]
+default = []
 csharp = ["dep:uniffi-bindgen-cs"]
 dart = ["dep:uniffi-dart"]
-io = ["payjoin/io"]
-_test-utils = ["payjoin-test-utils", "tokio", "io"]
+_test-utils = ["payjoin-test-utils", "tokio"]
 _manual-tls = ["payjoin/_manual-tls"]
 wasm_js = ["getrandom/js"]
 

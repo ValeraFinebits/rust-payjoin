@@ -163,10 +163,16 @@ impl TestServices {
         })
     }
 
-    pub fn fetch_ohttp_keys(&self) -> Result<crate::OhttpKeys, crate::io::IoError> {
+    pub fn fetch_ohttp_keys(&self) -> Result<crate::OhttpKeys, BoxSendSyncError> {
         let runtime = RUNTIME.lock().expect("Lock should not be poisoned");
         runtime.block_on(async {
-            self.0.lock().await.fetch_ohttp_keys().await.map_err(Into::into).map(Into::into)
+            self.0
+                .lock()
+                .await
+                .fetch_ohttp_keys()
+                .await
+                .map(Into::into)
+                .map_err(|e| payjoin_test_utils::BoxSendSyncError::from(e).into())
         })
     }
 }

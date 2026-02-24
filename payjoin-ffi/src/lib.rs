@@ -1,8 +1,6 @@
 #![crate_name = "payjoin_ffi"]
 
 pub mod error;
-#[cfg(feature = "io")]
-pub mod io;
 pub mod ohttp;
 pub mod output_substitution;
 pub mod receive;
