@@ -22,7 +22,7 @@
   <files>
     <file src="README.md" target="README.md" />
     <file src="src/payjoin.cs" target="contentFiles/cs/any/payjoin.cs" />
-    <file src="src/Payjoin.Http.cs" target="contentFiles/cs/any/Payjoin.Http.cs" />
+    <file src="Payjoin.Http.cs" target="contentFiles/cs/any/Payjoin.Http.cs" />
     <file src="lib/*" target="runtimes/any/native" />
   </files>
 </package>
