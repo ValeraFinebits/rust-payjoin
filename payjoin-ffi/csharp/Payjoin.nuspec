@@ -15,12 +15,14 @@
     <tags>bitcoin payjoin bip78 ffi csharp dotnet</tags>
     <contentFiles>
       <files include="cs/any/payjoin.cs" buildAction="Compile" copyToOutput="false" flatten="true" />
+      <files include="cs/any/Payjoin.Http.cs" buildAction="Compile" copyToOutput="false" flatten="true" />
     </contentFiles>
   </metadata>
 
   <files>
     <file src="README.md" target="README.md" />
     <file src="src/payjoin.cs" target="contentFiles/cs/any/payjoin.cs" />
+    <file src="src/Payjoin.Http.cs" target="contentFiles/cs/any/Payjoin.Http.cs" />
     <file src="lib/*" target="runtimes/any/native" />
   </files>
 </package>

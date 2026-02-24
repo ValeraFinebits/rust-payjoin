@@ -1,5 +1,5 @@
 # Generated bindings
-src/*.cs
+src/payjoin.cs
 
 # Build outputs
 bin/
