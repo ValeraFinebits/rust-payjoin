@@ -1,5 +1,5 @@
 using Xunit;
-using uniffi.payjoin;
+using Payjoin;
 
 namespace Payjoin.Tests;
 

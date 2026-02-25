@@ -1,6 +1,6 @@
 using Payjoin.Http;
 using System.Text.Json;
-using uniffi.payjoin;
+using Payjoin;
 using Xunit;
 
 namespace Payjoin.Tests

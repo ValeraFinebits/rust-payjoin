@@ -11,3 +11,7 @@ cdylib_name = "payjoin_ffi"
 [bindings.dart]
 cdylib_name = "payjoin_ffi"
 package_name = "payjoin"
+
+[bindings.csharp]
+namespace = "Payjoin"
+cdylib_name = "payjoin_ffi"

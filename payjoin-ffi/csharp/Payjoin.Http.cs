@@ -1,4 +1,4 @@
-﻿using uniffi.payjoin;
+﻿using Payjoin;
 
 namespace Payjoin.Http
 {
