@@ -1,5 +1,6 @@
 name: Build and Test CSharp
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Flake maintenance"]
     types: [requested]
@@ -8,6 +9,7 @@ on:
   pull_request:
     paths:
       - payjoin-ffi/**
+
 env:
   RUSTUP_TOOLCHAIN: 1.85
 
