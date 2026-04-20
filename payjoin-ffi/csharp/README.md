@@ -1,4 +1,4 @@
-# Payjoin C# Bindings
+# Payjoin C# Bindings 
 
 Welcome to the C# language bindings for the [Payjoin Dev Kit](https://payjoindevkit.org/)!
 
